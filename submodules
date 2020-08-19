@@ -1,0 +1,133 @@
+#!/usr/bin/env bash
+
+# Manages git submodules. Check the help for more info.
+
+set -e
+set -u
+set -o pipefail
+
+# Ansi escape codes
+RESET="\e[0m"
+ITALIC="\e[3m"
+BOLD="\e[1m"
+YELLOW="\e[33m"
+INDENT="\r\t\t\t\t\t"
+
+# root of the repository
+root="$(dirname "$(dirname "$(realpath -s "${BASH_SOURCE[0]}")")")/"
+cd "$root"
+
+# Shows help and exits with $1
+help() {
+	(
+		echo "Usage: ${0} <subcommand>"
+		echo
+		echo "Subcommands are:"
+		echo "- help: Show this help"
+		echo "- fix: Try to fix all submodules by updating and initializing them"
+		echo "  Optional parameters: Paths to submodules - omit for all submodules"
+		echo "- updatable: List updatable submodules"
+		echo "- notMaster: List submodules where the current commit is not on origin/master"
+		echo "- update: Update a submodule (or multiple) to origin/master. With extra force"
+		echo "  Mandatory parameters: Paths to submodules"
+	) >&2
+	exit "${1}"
+}
+
+# Runs a git command in the global repository context
+runGit() {
+	git --git-dir="${root}/.git" --work-tree="${root}" "${@}"
+}
+
+# Runs a git command in the context of the submodule $1
+runGitSubmodule() {
+	submod="${1}"
+	shift
+	git --git-dir="${root}/.git/modules/${submod}" --work-tree="${root}/${submod}" "${@}"
+}
+
+# Tries to fix submodules
+fix() {
+	runGit submodule absorbgitdirs
+	runGit submodule update --init --recursive "${@}"
+}
+
+# Fetch all submodules parallel
+fetch_submodules() {
+	IFS=$'\n'
+	echo "Fetch all submodules"
+	while read -r module_str; do
+		IFS=' ' read -ra module <<< "$module_str"
+		cd "${module[1]}" || exit 1
+		git fetch &
+		cd "$root" || exit 1
+	done < <(git submodule status)
+	wait
+}
+
+# Check all submodules for new upstream commits
+updatable() {
+	IFS=$'\n'
+	fetch_submodules
+	while read -r module_str; do
+		IFS=' ' read -ra module <<< "$module_str"
+		if [ "${module[0]:0:1}" = "+" ]; then
+			echo -e "$ITALIC$YELLOW${module[1]}$INDENT$RESET$BOLD$YELLOW is out of sync\e[0m"
+		fi
+	done < <(git submodule status)
+}
+
+# Try to find submodules that are not on master
+notMaster() {
+	IFS=$'\n'
+	fetch_submodules
+	while read -r module_str; do
+		IFS=' ' read -ra module <<< "$module_str"
+		if ! echo "${module[2]}"|grep -q "master"; then
+			echo -e "$ITALIC$YELLOW${module[1]}$INDENT$RESET$BOLD$YELLOW is not up to date\e[0m"
+		elif [ "${module[0]:0:1}" = "+" ]; then
+			echo -e "$ITALIC$YELLOW${module[1]}$INDENT$RESET$BOLD$YELLOW is out of sync\e[0m"
+		fi
+	done < <(git submodule status)
+}
+
+# Update a submodule to origin/master
+update() {
+	if [ "${#}" -lt 1 ]; then
+		help 1
+	fi
+	for submod in "${@}"; do
+		runGitSubmodule "${submod}" fetch origin master
+		runGitSubmodule "${submod}" checkout master
+		runGitSubmodule "${submod}" reset --hard origin/master
+		runGit add "${submod}"
+	done
+}
+
+# Parameter stuff
+if [ "${#}" -lt 1 ]; then
+	help 1
+fi
+
+subcommand="${1}"
+shift
+case "${subcommand}" in
+	help)
+		help 0
+		;;
+	fix)
+		fix "${@}"
+		;;
+	updatable)
+		updatable "${@}"
+		;;
+	notMaster)
+		notMaster "${@}"
+		;;
+	update)
+		update "${@}"
+		;;
+	*)
+		help 1
+		;;
+esac
