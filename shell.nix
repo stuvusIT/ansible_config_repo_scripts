@@ -7,6 +7,8 @@ pkgs.stdenvNoCC.mkDerivation {
 
   nativeBuildInputs = with pkgs; [
     ansible
+    kubectl
+    kubernetes-helm
     sshpass
     (python3.withPackages(ps: with ps; [
       autopep8
@@ -18,6 +20,7 @@ pkgs.stdenvNoCC.mkDerivation {
 
   shellHook = ''
     export IN_STUVUS_NIX_SHELL=1
+    export KUBECONFIG=./kubeconfig
     ${if !inPlaybook then "if [ -f .nix-shell-hook ]; then source .nix-shell-hook; fi" else ""}
   '';
 }
