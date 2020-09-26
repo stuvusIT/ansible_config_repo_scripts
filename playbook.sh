@@ -73,5 +73,15 @@ else
 fi
 trap 'rm ./.playbook.yml' INT TERM EXIT
 
+export "${environment[@]}"
+
+for collection in ${ANSIBLE_GALAXY_COLLECTIONS:-}; do
+	echo "[playbook.sh] Installing ansible-galaxy dependency \"${collection}\" ..."
+	# Replace . by /
+	[ ! -e $HOME/.ansible/collections/ansible_collections/"${collection//\./\//}" ] \
+		&& ansible-galaxy collection install "$collection"
+done
+
 # Go!
-exec env - "${environment[@]}" "${ANSIBLE_PLAYBOOK:-ansible-playbook}" "${@}" "./.playbook.yml"
+echo "[playbook.sh] Running playbook ..."
+exec "${ANSIBLE_PLAYBOOK:-ansible-playbook}" "${@}" "./.playbook.yml"
