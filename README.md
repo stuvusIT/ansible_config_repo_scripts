@@ -221,3 +221,20 @@ LANG=
 
 Assignments with an empty value are filled from the parent environment (your shell).
 If the variable doesn't exist in the parent environment, it is ignored.
+
+### Ansible Galaxy Collections
+
+The `playbook.sh` script takes a variable `ANSIBLE_GALAXY_COLLECTIONS` and installs the contained
+collections (separated by spaces) if they do not already exist in
+`$HOME/.ansible/collections/ansible_collections`.
+The `ANSIBLE_GALAXY_COLLECTIONS` variable can be given
+
+- as an environment variable when, or
+- as a variable in the `environment` file.
+
+Example:
+
+```bash
+# ./environment
+ANSIBLE_GALAXY_COLLECTIONS=community.general community.crypto community.mysql
+```
