@@ -36,6 +36,7 @@ pkgs.stdenvNoCC.mkDerivation {
       pyyaml
     ]))
     sshpass
+    sshuttle
     tigervnc
     virtctl
   ];
