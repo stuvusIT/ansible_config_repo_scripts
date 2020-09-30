@@ -29,13 +29,14 @@ pkgs.stdenvNoCC.mkDerivation {
     ansible
     kubectl
     kubernetes-helm
-    sshpass
     (python3.withPackages(ps: with ps; [
       autopep8
       jmespath
       pylint
       pyyaml
     ]))
+    sshpass
+    tigervnc
     virtctl
   ];
 
