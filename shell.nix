@@ -1,6 +1,13 @@
 { pkgs ? import <nixpkgs> {}, inPlaybook ? false }:
 
 let
+  # Pin Ansible 2.10.0 from NixOS 20.09
+  ansible = (import (builtins.fetchTarball {
+    name = "nixos-20.09-2020-10-03";
+    url = "https://github.com/nixos/nixpkgs/archive/0cfe5377e8993052f9b0dd56d058f8008af45bd9.tar.gz";
+    sha256 = "0i3ybddi2mrlaz3di3svdpgy93zwmdglpywih4s9rd3wj865gzn1";
+  }) {}).ansible;
+
   virtctl = with pkgs; stdenv.mkDerivation rec {
     pname = "virtctl";
     version = "0.33.0";
