@@ -25,6 +25,24 @@ let
       chmod +x $out/bin/virtctl
     '';
   };
+
+  kubectl-minio = with pkgs; stdenv.mkDerivation rec {
+    pname = "kubectl-minio";
+    version = "3.0.29";
+    src = pkgs.fetchurl {
+      url = "https://github.com/minio/operator/releases/download/v${version}/kubectl-minio_${version}_linux_amd64";
+      sha256 = "0mxkicrkbxly60yxm6xm4r3xrcn6bjyfyzw3qjf04s14g08slidw";
+    };
+    nativeBuildInputs = [
+      autoPatchelfHook
+    ];
+    phases = [ "installPhase" "fixupPhase" ];
+    installPhase = ''
+      mkdir -p $out/bin
+      cp $src $out/bin/kubectl-minio
+      chmod +x $out/bin/kubectl-minio
+    '';
+  };
 in
 
 # stdenvNoCC because we don't need a C-compiler during build or
@@ -35,7 +53,9 @@ pkgs.stdenvNoCC.mkDerivation {
   nativeBuildInputs = with pkgs; [
     ansible
     kubectl
+    kubectl-minio
     kubernetes-helm
+    minio-client
     (python3.withPackages(ps: with ps; [
       autopep8
       jmespath
