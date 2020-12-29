@@ -26,6 +26,20 @@ let
     '';
   };
 
+  minio-warp = with pkgs; stdenv.mkDerivation rec {
+    pname = "warp";
+    version = "0.3.28";
+    src = fetchurl {
+      url = "https://github.com/minio/warp/releases/download/v${version}/warp_${version}_Linux_x86_64.tar.gz";
+      sha256 = "0gjqz21lyykf6ia9wa4krn1nsg1y41zah6m3c1lzy1sb44f8k6rm";
+    };
+    sourceRoot = ".";
+    installPhase = ''
+      mkdir -p $out/bin
+      cp warp $out/bin/warp
+    '';
+  };
+
   kubectl-minio = with pkgs; stdenv.mkDerivation rec {
     pname = "kubectl-minio";
     version = "3.0.29";
@@ -74,6 +88,7 @@ pkgs.stdenvNoCC.mkDerivation {
     kubectl-minio
     kubernetes-helm
     minio-client
+    minio-warp
     (python3.withPackages(ps: with ps; [
       autopep8
       jmespath
