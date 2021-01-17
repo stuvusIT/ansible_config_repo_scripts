@@ -103,6 +103,7 @@ pkgs.stdenvNoCC.mkDerivation {
   shellHook = ''
     export IN_STUVUS_NIX_SHELL=1
     export KUBECONFIG=./kubeconfig
+    source <(kubectl completion bash)
     ${if !inPlaybook then "if [ -f .nix-shell-hook ]; then source .nix-shell-hook; fi" else ""}
   '';
 }
