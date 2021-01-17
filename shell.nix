@@ -97,6 +97,7 @@ pkgs.stdenvNoCC.mkDerivation {
     ]))
     sshpass
     sshuttle
+    stern
     tigervnc
     velero
     virtctl
