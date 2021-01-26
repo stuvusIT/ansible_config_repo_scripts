@@ -15,10 +15,10 @@ let
       url = "https://github.com/kubevirt/kubevirt/releases/download/v${version}/virtctl-v${version}-linux-x86_64";
       sha256 = "1qv7m6njm0v6qs2fz8z756v95k1h1d5r7pmzaasq32khm48rg5hh";
     };
+    dontUnpack = true;
     nativeBuildInputs = [
       autoPatchelfHook
     ];
-    phases = [ "installPhase" "fixupPhase" ];
     installPhase = ''
       mkdir -p $out/bin
       cp $src $out/bin/virtctl
@@ -47,10 +47,7 @@ let
       url = "https://github.com/minio/operator/releases/download/v${version}/kubectl-minio_${version}_linux_amd64";
       sha256 = "0mxkicrkbxly60yxm6xm4r3xrcn6bjyfyzw3qjf04s14g08slidw";
     };
-    nativeBuildInputs = [
-      autoPatchelfHook
-    ];
-    phases = [ "installPhase" "fixupPhase" ];
+    dontUnpack = true;
     installPhase = ''
       mkdir -p $out/bin
       cp $src $out/bin/kubectl-minio
@@ -61,18 +58,13 @@ let
   velero = with pkgs; stdenv.mkDerivation rec {
     pname = "velero";
     version = "1.5.2";
-    src = fetchTarball {
+    src = fetchurl {
       url = "https://github.com/vmware-tanzu/velero/releases/download/v1.5.2/velero-v1.5.2-linux-amd64.tar.gz";
-      sha256 = "0qwgwdrhbvlb6j8fmcxiwb1wxqqfji43vl4ldg8q6wgjj3gz8cvf";
+      sha256 = "0kx209q1b9z85brq9w7v0aafkpa292djzhpn1xjmfw8ww2xnxz1d";
     };
-    nativeBuildInputs = [
-      autoPatchelfHook
-    ];
-    phases = [ "installPhase" "fixupPhase" ];
     installPhase = ''
       mkdir -p $out/bin
-      cp $src/velero $out/bin/velero
-      chmod +x $out/bin/velero
+      cp velero $out/bin/velero
     '';
   };
 in
