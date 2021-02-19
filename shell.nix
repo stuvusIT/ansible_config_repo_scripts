@@ -67,6 +67,10 @@ let
       cp velero $out/bin/velero
     '';
   };
+
+  kubens = pkgs.writeShellScriptBin "kubens" ''
+    kubectl config set-context --current --namespace "$@"
+  '';
 in
 
 # stdenvNoCC because we don't need a C-compiler during build or
@@ -78,6 +82,7 @@ pkgs.stdenvNoCC.mkDerivation {
     ansible
     kubectl
     kubectl-minio
+    kubens
     kubernetes-helm
     minio-client
     minio-warp
