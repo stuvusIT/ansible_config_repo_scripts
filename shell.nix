@@ -71,6 +71,11 @@ let
   kubens = pkgs.writeShellScriptBin "kubens" ''
     kubectl config set-context --current --namespace "$@"
   '';
+
+  # You need to run `source kubecomp`
+  kubecomp = pkgs.writeShellScriptBin "kubecomp" ''
+      source <(kubectl completion bash)
+  '';
 in
 
 # stdenvNoCC because we don't need a C-compiler during build or
@@ -83,6 +88,7 @@ pkgs.stdenvNoCC.mkDerivation {
     kubectl
     kubectl-minio
     kubens
+    kubecomp
     kubernetes-helm
     minio-client
     minio-warp
