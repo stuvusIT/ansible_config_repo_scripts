@@ -68,12 +68,12 @@ let
     '';
   };
 
-  kubens = pkgs.writeShellScriptBin "kubens" ''
+  kubectl-ns = pkgs.writeShellScriptBin "kubectl-ns" ''
     kubectl config set-context --current --namespace "$@"
   '';
 
-  # You need to run `source kubecomp`
-  kubecomp = pkgs.writeShellScriptBin "kubecomp" ''
+  # You need to run `source kubectl-comp`
+  kubectl-comp = pkgs.writeShellScriptBin "kubectl-comp" ''
       source <(kubectl completion bash)
   '';
 in
@@ -86,9 +86,9 @@ pkgs.stdenvNoCC.mkDerivation {
   nativeBuildInputs = with pkgs; [
     ansible
     kubectl
+    kubectl-comp
     kubectl-minio
-    kubens
-    kubecomp
+    kubectl-ns
     kubernetes-helm
     minio-client
     minio-warp
