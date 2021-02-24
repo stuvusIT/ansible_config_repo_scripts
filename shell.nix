@@ -43,7 +43,7 @@ let
   kubectl-minio = with pkgs; stdenv.mkDerivation rec {
     pname = "kubectl-minio";
     version = "3.0.29";
-    src = pkgs.fetchurl {
+    src = fetchurl {
       url = "https://github.com/minio/operator/releases/download/v${version}/kubectl-minio_${version}_linux_amd64";
       sha256 = "0mxkicrkbxly60yxm6xm4r3xrcn6bjyfyzw3qjf04s14g08slidw";
     };
@@ -52,6 +52,23 @@ let
       mkdir -p $out/bin
       cp $src $out/bin/kubectl-minio
       chmod +x $out/bin/kubectl-minio
+    '';
+  };
+
+  kubelogin = with pkgs; stdenv.mkDerivation rec {
+    pname = "kubelogin";
+    version = "1.22.1";
+    src = fetchurl {
+      url = "https://github.com/int128/kubelogin/releases/download/v${version}/kubelogin_linux_amd64.zip";
+      sha256 = "09k7pi7251xn1nfsw77bhf6dx2263l3d3n3bv715i3qp6mjqmg6z";
+    };
+    nativeBuildInputs = [
+      unzip
+    ];
+    sourceRoot = ".";
+    installPhase = ''
+      mkdir -p $out/bin
+      cp kubelogin $out/bin/kubectl-oidc_login
     '';
   };
 
@@ -89,6 +106,7 @@ pkgs.stdenvNoCC.mkDerivation {
     kubectl-comp
     kubectl-minio
     kubectl-ns
+    kubelogin
     kubernetes-helm
     minio-client
     minio-warp
