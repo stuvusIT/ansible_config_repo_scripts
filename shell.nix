@@ -102,14 +102,18 @@ pkgs.stdenvNoCC.mkDerivation {
 
   nativeBuildInputs = with pkgs; [
     ansible
+    hugo
+    jq
     kubectl
     kubectl-comp
     kubectl-minio
     kubectl-ns
     kubelogin
     kubernetes-helm
+    kustomize
     minio-client
     minio-warp
+    postgresql_12
     (python3.withPackages(ps: with ps; [
       autopep8
       jmespath
@@ -122,6 +126,7 @@ pkgs.stdenvNoCC.mkDerivation {
     tigervnc
     velero
     virtctl
+    yq
   ];
 
   shellHook = ''
