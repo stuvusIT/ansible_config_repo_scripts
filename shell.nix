@@ -8,6 +8,35 @@ let
     sha256 = "0i3ybddi2mrlaz3di3svdpgy93zwmdglpywih4s9rd3wj865gzn1";
   }) {}).ansible;
 
+  colordiff = pkgs.writeShellScriptBin "colordiff" ''
+    diff -u -N --color=always "$@"
+    # Exit status of diff is 0 if inputs are the same, 1 if different, 2 if trouble.
+    # We only want to exit with an error if there's trouble, not if they are different.
+    if [ $? -eq 2 ]; then
+        exit 2
+    fi
+    exit 0
+  '';
+
+  kapply = pkgs.writeShellScriptBin "kapply" ''
+    set -e
+    set -o pipefail
+    target="$1"
+    shift
+    manifests="$(mktemp)"
+    kustomize build "$target" > "$manifests"
+    kubectl diff -f "$manifests" "$@"
+    while true; do
+        read -p "Apply? [y/n] " yn
+        case $yn in
+            [Yy]* ) break;;
+            [Nn]* ) exit;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+    kustomize build "$target" | kubectl apply -f "$manifests" "$@"
+  '';
+
   virtctl = with pkgs; stdenv.mkDerivation rec {
     pname = "virtctl";
     version = "0.33.0";
@@ -104,6 +133,7 @@ pkgs.stdenvNoCC.mkDerivation {
     ansible
     hugo
     jq
+    kapply
     kubectl
     kubectl-comp
     kubectl-minio
@@ -132,6 +162,7 @@ pkgs.stdenvNoCC.mkDerivation {
   shellHook = ''
     export IN_STUVUS_NIX_SHELL=1
     export KUBECONFIG=./kubeconfig
+    export KUBECTL_EXTERNAL_DIFF="${colordiff}/bin/colordiff"
     ${if !inPlaybook then "if [ -f .nix-shell-hook ]; then source .nix-shell-hook; fi" else ""}
   '';
 }
