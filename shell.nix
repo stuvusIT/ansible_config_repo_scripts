@@ -131,6 +131,7 @@ pkgs.stdenvNoCC.mkDerivation {
 
   nativeBuildInputs = with pkgs; [
     ansible
+    bashInteractive
     hugo
     jq
     kapply
