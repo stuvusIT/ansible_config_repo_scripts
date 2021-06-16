@@ -8,6 +8,21 @@ let
     sha256 = "0i3ybddi2mrlaz3di3svdpgy93zwmdglpywih4s9rd3wj865gzn1";
   }) {}).ansible;
 
+  calicoctl = with pkgs; stdenv.mkDerivation rec {
+    pname = "calicoctl";
+    version = "3.18.4";
+    src = fetchurl {
+      url = "https://github.com/projectcalico/calicoctl/releases/download/v${version}/calicoctl-linux-amd64";
+      sha256 = "0yjlkgf4l8argmgs9awj2h61nljrw1ya1m2fgnanqivqjidlmrva";
+    };
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p $out/bin
+      cp $src $out/bin/calicoctl
+      chmod +x $out/bin/calicoctl
+    '';
+  };
+
   colordiff = pkgs.writeShellScriptBin "colordiff" ''
     diff -u -N --color=always "$@"
     # Exit status of diff is 0 if inputs are the same, 1 if different, 2 if trouble.
@@ -148,6 +163,7 @@ pkgs.stdenvNoCC.mkDerivation {
   nativeBuildInputs = with pkgs; [
     ansible
     bashInteractive
+    calicoctl
     hugo
     jq
     kapply
