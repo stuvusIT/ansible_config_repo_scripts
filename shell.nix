@@ -161,9 +161,9 @@ pkgs.stdenvNoCC.mkDerivation {
   ];
 
   IN_STUVUS_NIX_SHELL = "1";
-  KUBECONFIG = toString ./kubeconfig;
+  KUBECONFIG = toString ../kubeconfig;
   KUBECTL_EXTERNAL_DIFF = "${colordiff}/bin/colordiff";
-  STUVUS_INFRA_REPO = toString ./.;
+  STUVUS_INFRA_REPO = toString ../.;
 
   shellHook = ''
     ${if !inPlaybook then "if [ -f .nix-shell-hook ]; then source .nix-shell-hook; fi" else ""}
