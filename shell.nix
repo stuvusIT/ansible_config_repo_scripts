@@ -103,10 +103,10 @@ let
 
   velero = with pkgs; stdenv.mkDerivation rec {
     pname = "velero";
-    version = "1.5.2";
+    version = "1.6.0";
     src = fetchurl {
-      url = "https://github.com/vmware-tanzu/velero/releases/download/v1.5.2/velero-v1.5.2-linux-amd64.tar.gz";
-      sha256 = "0kx209q1b9z85brq9w7v0aafkpa292djzhpn1xjmfw8ww2xnxz1d";
+      url = "https://github.com/vmware-tanzu/velero/releases/download/v${version}/velero-v${version}-linux-amd64.tar.gz";
+      sha256 = "1pbp27q0zmvhiwdj5wl7pgqrd281ybxsdgn0xmvn93gihvwn5g83";
     };
     installPhase = ''
       mkdir -p $out/bin
