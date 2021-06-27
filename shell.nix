@@ -164,8 +164,11 @@ pkgs.stdenvNoCC.mkDerivation {
     ansible
     bashInteractive
     calicoctl
+    gojsontoyaml
     hugo
     jq
+    jsonnet
+    jsonnet-bundler
     kapply
     kubectl
     kubectl-comp
