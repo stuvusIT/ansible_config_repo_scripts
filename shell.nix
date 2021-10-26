@@ -84,6 +84,21 @@ let
     '';
   };
 
+  kubecolor = with pkgs; stdenv.mkDerivation rec {
+    pname = "kubecolor";
+    version = "0.0.20";
+    src = fetchurl {
+      url = "https://github.com/dty1er/kubecolor/releases/download/v${version}/kubecolor_${version}_Linux_x86_64.tar.gz";
+      sha256 = "1hykqdq904z1l96ah7acnjh7g43lkz2lf3wm0x4h0ilq5kmd0gp5";
+    };
+    sourceRoot = ".";
+    installPhase = ''
+      mkdir -p $out/bin
+      cp kubecolor $out/bin/kubecolor
+      chmod +x $out/bin/kubecolor
+    '';
+  };
+
   kubectl-minio = with pkgs; stdenv.mkDerivation rec {
     pname = "kubectl-minio";
     version = "3.0.29";
@@ -170,6 +185,7 @@ pkgs.stdenvNoCC.mkDerivation {
     jsonnet
     jsonnet-bundler
     kapply
+    kubecolor
     kubectl
     kubectl-comp
     kubectl-minio
