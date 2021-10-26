@@ -49,7 +49,7 @@ let
             * ) echo "Please answer yes or no.";;
         esac
     done
-    kustomize build "$target" | kubectl apply -f "$manifests" "$@"
+    kubectl apply -f "$manifests" "$@"
   '';
 
   virtctl = with pkgs; stdenv.mkDerivation rec {
