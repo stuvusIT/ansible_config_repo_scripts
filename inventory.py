@@ -62,7 +62,7 @@ def mergeDict(a, b, overwrite=True):
         mergeDict(a[key], b[key], overwrite=overwrite)
       elif isinstance(a[key], list) and isinstance(b[key], list):
         a[key] = a[key] + b[key]
-      elif overwrite == False:
+      elif overwrite == False or type(a[key]) != type(b[key]):
         if a[key] != b[key]:
           raise InventoryErrors(f'There are conflicting definitions for `{key}`: `{a[key]}` and `{b[key]}`')
       else:
