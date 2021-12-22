@@ -54,21 +54,19 @@ def mergeDict(a, b, overwrite=True):
   :param dict a: The dict to merge into
   :param dict b: The dict to merge into a, overriding with the rules specified above
   '''
-  if not b:
-    return a
   for key in b:
     if key in a:
       if isinstance(a[key], dict) and isinstance(b[key], dict):
         mergeDict(a[key], b[key], overwrite=overwrite)
       elif isinstance(a[key], list) and isinstance(b[key], list):
-        a[key] = a[key] + b[key]
+        a[key] = a[key] + deepcopy(b[key])
       elif overwrite == False or type(a[key]) != type(b[key]):
         if a[key] != b[key]:
           raise InventoryErrors(f'There are conflicting definitions for `{key}`: `{a[key]}` and `{b[key]}`')
       else:
-        a[key] = b[key]
+        a[key] = deepcopy(b[key])
     else:
-      a[key] = b[key]
+      a[key] = deepcopy(b[key])
 
 
 def listFiles(dirPath):
@@ -168,14 +166,14 @@ def addHost(ansibleInventory, userConfig, hostName, hostConfig):
     if groupName != 'all':
       # Merge group vars together, but don't allow overwrites
       try:
-        mergeDict(groupsConfig, deepcopy(ansibleInventory[groupName]['vars']), overwrite=False)
+        mergeDict(groupsConfig, ansibleInventory[groupName]['vars'], overwrite=False)
       except InventoryErrors as e:
         errors.extend([ f'For host `{hostName}`: {error}' for error in e.errors ])
 
   # The priorities are coded here:
   mergedConfig = {}
   mergeDict(mergedConfig, userConfig)
-  mergeDict(mergedConfig, deepcopy(ansibleInventory['all']['vars']))
+  mergeDict(mergedConfig, ansibleInventory['all']['vars'])
   mergeDict(mergedConfig, groupsConfig)
   mergeDict(mergedConfig, hostConfig)
 
