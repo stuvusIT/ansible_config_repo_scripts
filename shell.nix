@@ -177,6 +177,7 @@ pkgs.stdenvNoCC.mkDerivation {
     jq
     jsonnet
     jsonnet-bundler
+    k9s
     kapply
     kubecolor
     kubectl
