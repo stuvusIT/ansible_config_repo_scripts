@@ -146,21 +146,6 @@ let
       source <(kubectl completion bash)
   '';
 
-  restic = with pkgs; stdenv.mkDerivation rec {
-    pname = "restic";
-    version = "0.12.0";
-    src = fetchurl {
-      url = "https://github.com/restic/restic/releases/download/v${version}/restic_${version}_linux_amd64.bz2";
-      sha256 = "102biy5xh2yikq11zf9rw93yqw4wm0rgw2qz8r6sma2fhd9kvlb3";
-    };
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/bin
-      bzip2 -dk $src --stdout > $out/bin/restic
-      chmod +x $out/bin/restic
-    '';
-  };
-
 in
 
 # stdenvNoCC because we don't need a C-compiler during build or
