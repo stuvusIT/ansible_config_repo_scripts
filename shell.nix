@@ -92,21 +92,6 @@ let
     '';
   };
 
-  kubectl-minio = with pkgs; stdenv.mkDerivation rec {
-    pname = "kubectl-minio";
-    version = "3.0.29";
-    src = fetchurl {
-      url = "https://github.com/minio/operator/releases/download/v${version}/kubectl-minio_${version}_linux_amd64";
-      sha256 = "0mxkicrkbxly60yxm6xm4r3xrcn6bjyfyzw3qjf04s14g08slidw";
-    };
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/kubectl-minio
-      chmod +x $out/bin/kubectl-minio
-    '';
-  };
-
   kubelogin = with pkgs; stdenv.mkDerivation rec {
     pname = "kubelogin";
     version = "1.22.1";
@@ -181,7 +166,6 @@ pkgs.stdenvNoCC.mkDerivation {
     kubecolor
     kubectl
     kubectl-comp
-    kubectl-minio
     kubectl-ns
     kubelogin
     kubernetes-helm
