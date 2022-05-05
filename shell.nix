@@ -107,23 +107,6 @@ let
     '';
   };
 
-  kubelogin = with pkgs; stdenv.mkDerivation rec {
-    pname = "kubelogin";
-    version = "1.22.1";
-    src = fetchurl {
-      url = "https://github.com/int128/kubelogin/releases/download/v${version}/kubelogin_linux_amd64.zip";
-      sha256 = "09k7pi7251xn1nfsw77bhf6dx2263l3d3n3bv715i3qp6mjqmg6z";
-    };
-    nativeBuildInputs = [
-      unzip
-    ];
-    sourceRoot = ".";
-    installPhase = ''
-      mkdir -p $out/bin
-      cp kubelogin $out/bin/kubectl-oidc_login
-    '';
-  };
-
   velero = with pkgs; stdenv.mkDerivation rec {
     pname = "velero";
     version = "1.6.0";
@@ -183,7 +166,7 @@ pkgs.stdenvNoCC.mkDerivation {
     kubectl-comp
     kubectl-minio
     kubectl-ns
-    kubelogin
+    kubelogin-oidc
     kubernetes-helm
     kustomize
     minio-client
