@@ -47,10 +47,10 @@ let
 
   virtctl = with pkgs; stdenv.mkDerivation rec {
     pname = "virtctl";
-    version = "0.33.0";
+    version = "0.52.0";
     src = pkgs.fetchurl {
-      url = "https://github.com/kubevirt/kubevirt/releases/download/v${version}/virtctl-v${version}-linux-x86_64";
-      sha256 = "1qv7m6njm0v6qs2fz8z756v95k1h1d5r7pmzaasq32khm48rg5hh";
+      url = "https://github.com/kubevirt/kubevirt/releases/download/v${version}/virtctl-v${version}-linux-amd64";
+      sha256 = "09kgxvfzn9y2s6px87p4d42p5l6qc8mk0wfn9f4a8pgi0b99ln1c";
     };
     dontUnpack = true;
     nativeBuildInputs = [
@@ -107,23 +107,6 @@ let
     '';
   };
 
-  kubelogin = with pkgs; stdenv.mkDerivation rec {
-    pname = "kubelogin";
-    version = "1.22.1";
-    src = fetchurl {
-      url = "https://github.com/int128/kubelogin/releases/download/v${version}/kubelogin_linux_amd64.zip";
-      sha256 = "09k7pi7251xn1nfsw77bhf6dx2263l3d3n3bv715i3qp6mjqmg6z";
-    };
-    nativeBuildInputs = [
-      unzip
-    ];
-    sourceRoot = ".";
-    installPhase = ''
-      mkdir -p $out/bin
-      cp kubelogin $out/bin/kubectl-oidc_login
-    '';
-  };
-
   kubectl-ns = pkgs.writeShellScriptBin "kubectl-ns" ''
     kubectl config set-context --current --namespace "$@"
   '';
@@ -164,13 +147,14 @@ pkgs.stdenvNoCC.mkDerivation {
     jq
     jsonnet
     jsonnet-bundler
+    k9s
     kapply
     kubecolor
     kubectl
     kubectl-comp
     kubectl-minio
     kubectl-ns
-    kubelogin
+    kubelogin-oidc
     kubernetes-helm
     kustomize
     minio-client
