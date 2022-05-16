@@ -47,10 +47,10 @@ let
 
   virtctl = with pkgs; stdenv.mkDerivation rec {
     pname = "virtctl";
-    version = "0.33.0";
+    version = "0.52.0";
     src = pkgs.fetchurl {
-      url = "https://github.com/kubevirt/kubevirt/releases/download/v${version}/virtctl-v${version}-linux-x86_64";
-      sha256 = "1qv7m6njm0v6qs2fz8z756v95k1h1d5r7pmzaasq32khm48rg5hh";
+      url = "https://github.com/kubevirt/kubevirt/releases/download/v${version}/virtctl-v${version}-linux-amd64";
+      sha256 = "09kgxvfzn9y2s6px87p4d42p5l6qc8mk0wfn9f4a8pgi0b99ln1c";
     };
     dontUnpack = true;
     nativeBuildInputs = [
