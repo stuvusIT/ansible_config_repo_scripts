@@ -92,21 +92,6 @@ let
     '';
   };
 
-  kubectl-minio = with pkgs; stdenv.mkDerivation rec {
-    pname = "kubectl-minio";
-    version = "3.0.29";
-    src = fetchurl {
-      url = "https://github.com/minio/operator/releases/download/v${version}/kubectl-minio_${version}_linux_amd64";
-      sha256 = "0mxkicrkbxly60yxm6xm4r3xrcn6bjyfyzw3qjf04s14g08slidw";
-    };
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/kubectl-minio
-      chmod +x $out/bin/kubectl-minio
-    '';
-  };
-
   kubectl-ns = pkgs.writeShellScriptBin "kubectl-ns" ''
     kubectl config set-context --current --namespace "$@"
   '';
@@ -115,21 +100,6 @@ let
   kubectl-comp = pkgs.writeShellScriptBin "kubectl-comp" ''
       source <(kubectl completion bash)
   '';
-
-  restic = with pkgs; stdenv.mkDerivation rec {
-    pname = "restic";
-    version = "0.12.0";
-    src = fetchurl {
-      url = "https://github.com/restic/restic/releases/download/v${version}/restic_${version}_linux_amd64.bz2";
-      sha256 = "102biy5xh2yikq11zf9rw93yqw4wm0rgw2qz8r6sma2fhd9kvlb3";
-    };
-    dontUnpack = true;
-    installPhase = ''
-      mkdir -p $out/bin
-      bzip2 -dk $src --stdout > $out/bin/restic
-      chmod +x $out/bin/restic
-    '';
-  };
 
 in
 
@@ -152,7 +122,6 @@ pkgs.stdenvNoCC.mkDerivation {
     kubecolor
     kubectl
     kubectl-comp
-    kubectl-minio
     kubectl-ns
     kubelogin-oidc
     kubernetes-helm
