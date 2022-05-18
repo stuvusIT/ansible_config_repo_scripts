@@ -92,19 +92,6 @@ let
     '';
   };
 
-  velero = with pkgs; stdenv.mkDerivation rec {
-    pname = "velero";
-    version = "1.6.0";
-    src = fetchurl {
-      url = "https://github.com/vmware-tanzu/velero/releases/download/v${version}/velero-v${version}-linux-amd64.tar.gz";
-      sha256 = "1pbp27q0zmvhiwdj5wl7pgqrd281ybxsdgn0xmvn93gihvwn5g83";
-    };
-    installPhase = ''
-      mkdir -p $out/bin
-      cp velero $out/bin/velero
-    '';
-  };
-
   kubectl-ns = pkgs.writeShellScriptBin "kubectl-ns" ''
     kubectl config set-context --current --namespace "$@"
   '';
