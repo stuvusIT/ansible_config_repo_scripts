@@ -31,9 +31,10 @@ let
     set -o pipefail
     target="$1"
     shift
+    context="$(cd "$target"; git rev-parse --show-prefix | cut -d / -f1)"
     manifests="$(mktemp)"
     kustomize build "$target" > "$manifests"
-    kubectl diff -f "$manifests" "$@"
+    kubectl --context "$context" diff -f "$manifests" "$@"
     while true; do
         read -p "Apply? [y/n] " yn
         case $yn in
@@ -42,7 +43,7 @@ let
             * ) echo "Please answer yes or no.";;
         esac
     done
-    kubectl apply -f "$manifests" "$@"
+    kubectl --context "$context" apply -f "$manifests" "$@"
   '';
 
   virtctl = with pkgs; stdenv.mkDerivation rec {
