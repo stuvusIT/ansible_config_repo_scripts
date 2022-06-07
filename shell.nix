@@ -79,10 +79,10 @@ let
 
   kubecolor = with pkgs; stdenv.mkDerivation rec {
     pname = "kubecolor";
-    version = "0.0.20";
+    version = "0.0.21";
     src = fetchurl {
-      url = "https://github.com/dty1er/kubecolor/releases/download/v${version}/kubecolor_${version}_Linux_x86_64.tar.gz";
-      sha256 = "1hykqdq904z1l96ah7acnjh7g43lkz2lf3wm0x4h0ilq5kmd0gp5";
+      url = "https://github.com/jrpedrianes/kubecolor/releases/download/v${version}/kubecolor_${version}_Linux_x86_64.tar.gz";
+      sha256 = "03qf4a29nffjkrhiskkchx94xd4k18carcq8jp1wkvz8a9z9yb4z";
     };
     sourceRoot = ".";
     installPhase = ''
