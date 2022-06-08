@@ -32,11 +32,12 @@ let
     target="$1"
     shift
     context="$(cd "$target"; git rev-parse --show-prefix | cut -d / -f1)"
+    namespace="$(cd "$target"; git rev-parse --show-prefix | cut -d / -f2)"
     manifests="$(mktemp)"
     kustomize build "$target" > "$manifests"
-    kubectl --context "$context" diff -f "$manifests" "$@"
+    kubectl --context "$context" diff -f "$manifests" "$@" || echo $?
     while true; do
-        read -p "Apply? [y/n] " yn
+        read -p "Apply to context $context? [y/n] " yn
         case $yn in
             [Yy]* ) break;;
             [Nn]* ) exit;;
@@ -44,6 +45,19 @@ let
         esac
     done
     kubectl --context "$context" apply -f "$manifests" "$@"
+    current_context="$(kubectl config current-context)"
+    current_namespace="$(kubectl config get-contexts "$current_context" | grep "$current_context" | awk '{ print $5 }')"
+    if [ "$current_context" == "$context" ] && [ "$current_namespace" == "$namespace" ]; then
+      exit
+    fi
+    read -p "Set context '$current_context'->'$context' and namespace '$current_namespace'->'$namespace'? [y/N] " yn
+    case $yn in
+        [Yy]* )
+          kubectl config use-context "$context"
+          kubectl config set-context --current --namespace "$namespace";;
+        [Nn]* ) exit;;
+        * ) exit;;
+    esac
   '';
 
   virtctl = with pkgs; stdenv.mkDerivation rec {
