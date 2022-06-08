@@ -45,9 +45,9 @@ let
         esac
     done
     kubectl --context "$context" apply -f "$manifests" "$@"
-    current_context=$(kubectl config current-context)
-    current_namespace=$(kubectl config get-contexts $current_context | grep $current_context | awk '{ print $5 }')
-    if [ $current_context == $context ] && [ $current_namespace == $namespace ];then
+    current_context="$(kubectl config current-context)"
+    current_namespace="$(kubectl config get-contexts "$current_context" | grep "$current_context" | awk '{ print $5 }')"
+    if [ "$current_context" == "$context" ] && [ "$current_namespace" == "$namespace" ]; then
       exit
     fi
     read -p "Set context '$current_context'->'$context' and namespace '$current_namespace'->'$namespace'? [y/N] " yn
