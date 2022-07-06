@@ -38,7 +38,7 @@ let
   };
 
   k8sdiff = pkgs.writeShellScriptBin "k8sdiff" ''
-    diff -u -N --color=always "$@" | ${diff-highlight}/bin/diff-highlight | sed -E 's/\/run\/user\/[0-9]+\/([A-Z]*)-[0-9]*\/([A-Za-z0-9.-]+).*$/\1\t\2/'
+    diff -u -N --color=always "$@" | ${diff-highlight}/bin/diff-highlight | sed -E 's/(\/[a-zA-Z0-9_-]+)+\/([A-Z]*)-[0-9]*\/([A-Za-z0-9.-]+).*$/\2\t\3/'
   '';
 
   kapply = pkgs.writeShellScriptBin "kapply" ''
