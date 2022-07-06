@@ -16,14 +16,29 @@ let
     '';
   };
 
-  colordiff = pkgs.writeShellScriptBin "colordiff" ''
-    diff -u -N --color=always "$@"
-    # Exit status of diff is 0 if inputs are the same, 1 if different, 2 if trouble.
-    # We only want to exit with an error if there's trouble, not if they are different.
-    if [ $? -eq 2 ]; then
-        exit 2
-    fi
-    exit 0
+  diff-highlight = with pkgs; stdenv.mkDerivation rec {
+    name = "diff-highlight";
+    version = "2.36.1";
+    dontUnpack = true;
+    src1 = fetchurl {
+      url = "https://raw.githubusercontent.com/git/git/v${version}/contrib/diff-highlight/DiffHighlight.pm";
+      sha256 = "0gg8vg426mnjcx1k1y6ihr6bj1sc6vqg0irsgn1gicpmk2xx1q0d";
+    };
+    src2 = fetchurl {
+      url = "https://raw.githubusercontent.com/git/git/v${version}/contrib/diff-highlight/diff-highlight.perl";
+      sha256 = "187f95klx2s6qhgr0qj1m9y7khyf9b722y598fwdgw701bpg5sjx";
+    };
+    installPhase = ''
+      mkdir -p $out/bin
+      echo "#!${perl}/bin/perl" > $out/bin/diff-highlight
+      cat $src1 >> $out/bin/diff-highlight
+      cat $src2 >> $out/bin/diff-highlight
+      chmod +x $out/bin/diff-highlight
+    '';
+  };
+
+  k8sdiff = pkgs.writeShellScriptBin "k8sdiff" ''
+    diff -u -N --color=always "$@" | ${diff-highlight}/bin/diff-highlight | sed -E 's/(\/[a-zA-Z0-9_-]+)+\/([A-Z]*)-[0-9]*\/([A-Za-z0-9.-]+).*$/\2\t\3/'
   '';
 
   kapply = pkgs.writeShellScriptBin "kapply" ''
@@ -162,7 +177,7 @@ pkgs.stdenvNoCC.mkDerivation {
 
   IN_STUVUS_NIX_SHELL = "1";
   KUBECONFIG = toString ../kubeconfig;
-  KUBECTL_EXTERNAL_DIFF = "${colordiff}/bin/colordiff";
+  KUBECTL_EXTERNAL_DIFF = "${k8sdiff}/bin/k8sdiff";
   STUVUS_INFRA_REPO = toString ../.;
 
   shellHook = ''
