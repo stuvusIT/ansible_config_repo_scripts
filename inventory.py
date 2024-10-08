@@ -89,7 +89,7 @@ def listFiles(dirPath):
   # Convert list to dict
   ret = {}
   for f in files:
-    name = search('([a-z0-9_.-]*)\.yml$', f).group(1)
+    name = search(r'([a-z0-9_.-]*)\.yml$', f).group(1)
     ret[name] = f
   # List directories and add directories to paths
   for dir in dirs:
