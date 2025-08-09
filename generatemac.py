@@ -53,7 +53,7 @@ def listFiles(dirPath):
   confDir = join(dirname(__file__), dirPath)
   ret = next(walk(confDir))[2]
   # Add path to filename and filter out non-yml files
-  ret = [join(confDir, fileName) for fileName in ret if match(r'^[a-z0-9_-]*\.yml$', fileName)]
+  ret = [join(confDir, fileName) for fileName in ret if match(r'^[a-z0-9_-]*\.yaml$', fileName)]
   return ret
 
 

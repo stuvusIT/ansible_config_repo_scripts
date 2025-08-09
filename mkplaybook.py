@@ -11,7 +11,7 @@ def role2task(name, config):
 
     Parameters:
     name (str): Name of this role
-    config (dict): Dictionary containing roles.yml
+    config (dict): Dictionary containing roles.yaml
 
     Returns:
     str:The role as Ansible playbook task
@@ -72,7 +72,7 @@ def resolve(name, deps, allRoles, resolved, unresolved):
 
 
 if __name__ == '__main__':
-    config = {}  # roles.yml contents
+    config = {}  # roles.yaml contents
     playbook = []  # Playbook to write
     # These are dicts of dependency lists
     earlyRoles = {}  # Roles to execute at the beginning
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     lateRoles = {}  # Roles to execute in the end
 
     # Read config
-    with open(join(dirname(__file__), '../roles.yml')) as configFile:
+    with open(join(dirname(__file__), '../roles.yaml')) as configFile:
         config = safe_load(configFile)
 
     # Stat roles
@@ -116,5 +116,5 @@ if __name__ == '__main__':
         playbook.append(role2task(role, config))
 
     # Write out
-    with open(join(dirname(__file__), '../.playbook.yml'), 'w') as out:
+    with open(join(dirname(__file__), '../.playbook.yaml'), 'w') as out:
         out.write(dump(playbook, default_flow_style=False))
