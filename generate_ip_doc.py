@@ -10,15 +10,15 @@ rpath=os.path.dirname(os.path.realpath(__file__))
 os.chdir(rpath+'/..')
 
 # get a list of all host configuration files
-hostvar_files=glob.glob("./hosts/*.yml")
-hostvar_files.extend(glob.glob("./hosts/*/*.yml"))
+hostvar_files=glob.glob("./hosts/*.yaml")
+hostvar_files.extend(glob.glob("./hosts/*/*.yaml"))
 
 data = {}
 hostvar_keys_of_interest = ['ip', 'hostname', 'type', 'description', 'organisation', 'groups']
 
 # build hostname from host configuration path
 def get_hostname(host_config_path):
-    hostname = host_config_path.replace('.yml','')
+    hostname = host_config_path.replace('.yaml','')
     hostname = hostname.replace('./hosts/','')
     hostname = hostname.split('/')[0] # get the hostname not the filename (needed for hosts with multiple config files)
     return hostname

@@ -2,7 +2,7 @@
 
 # This script is supposed to run a playbook.
 # It doesn't matter where you call it from.
-# `playbooks/` will automatically be prepended to the path, while `.yml` will be appended.
+# `playbooks/` will automatically be prepended to the path, while `.yaml` will be appended.
 # This results in `$0 <ansible_args> <playbook_name_without_yml>
 
 # Fail on errors and unset variables
@@ -34,7 +34,7 @@ set -- "${@:1:$(($#-1))}"
 cd "$(dirname "$(readlink -f "${0}")")/.." || exit 255
 
 # Check if playbook exists
-if [ "${playbook}" != all ] && [ ! -f "${PWD}/playbooks/${playbook}.yml" ]; then
+if [ "${playbook}" != all ] && [ ! -f "${PWD}/playbooks/${playbook}.yaml" ]; then
 	echo "${PWD}/${playbook} does not exist"
 	exit 1
 fi
@@ -69,9 +69,9 @@ if [ "${playbook}" = all ]; then
 else
 	# Create a temporary playbook copy at the ansible root directory.
 	# This workaround is needed to allow template or macro includes from tasks
-	cp "playbooks/${playbook}.yml" ./.playbook.yml
+	cp "playbooks/${playbook}.yaml" ./.playbook.yaml
 fi
-trap 'rm ./.playbook.yml' INT TERM EXIT
+trap 'rm ./.playbook.yaml' INT TERM EXIT
 
 export "${environment[@]}"
 
@@ -84,4 +84,4 @@ done
 
 # Go!
 echo "[playbook.sh] Running playbook ..."
-exec "${ANSIBLE_PLAYBOOK:-ansible-playbook}" "${@}" "./.playbook.yml"
+exec "${ANSIBLE_PLAYBOOK:-ansible-playbook}" "${@}" "./.playbook.yaml"

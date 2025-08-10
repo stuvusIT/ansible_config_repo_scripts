@@ -71,12 +71,12 @@ def mergeDict(a, b, overwrite=True):
 
 def listFiles(dirPath):
   '''
-  List all yml files in a directory with their path relative to this script.
-  Only .yml files will be found.
+  List all YAML files in a directory with their path relative to this script.
+  Only .yaml files will be found.
 
-  This returns a dict with the key being the name of the yml file, and the value
-  being either the path of the file relative to this file (in case of a single .yml file)
-  or a list of yml files if they were grouped into a directory, where the key is the name of the
+  This returns a dict with the key being the name of the YAML file, and the value
+  being either the path of the file relative to this file (in case of a single .yaml file)
+  or a list of YAML files if they were grouped into a directory, where the key is the name of the
   directory. This resembles the behaviour of vanilla Ansible.
 
   :param str dirPath: Directory to scan for files
@@ -85,18 +85,18 @@ def listFiles(dirPath):
   dirs = next(walk(confDir))[1]
   files = next(walk(confDir))[2]
   # Add path to filename and filter out non-yml files
-  files = [join(confDir, fileName) for fileName in files if match(r'^[a-z0-9_.-]*\.yml$', fileName)]
+  files = [join(confDir, fileName) for fileName in files if match(r'^[a-z0-9_.-]*\.yaml$', fileName)]
   # Convert list to dict
   ret = {}
   for f in files:
-    name = search(r'([a-z0-9_.-]*)\.yml$', f).group(1)
+    name = search(r'([a-z0-9_.-]*)\.yaml$', f).group(1)
     ret[name] = f
   # List directories and add directories to paths
   for dir in dirs:
     ret[dir] = []
     for w in walk(join(confDir, dir)):
       for f in w[2]:
-        if match(r'^[a-z0-9_.-]*\.yml$', f):
+        if match(r'^[a-z0-9_.-]*\.yaml$', f):
           ret[dir] += [join(join(confDir, dir), f)]
 
   return ret
@@ -209,7 +209,7 @@ if __name__ == '__main__':
   # Read user configuration
   userConfig = {}
   try:
-    userConfig = readYAML(join(dirname(__file__), '../user.yml'))
+    userConfig = readYAML(join(dirname(__file__), '../user.yaml'))
   except IOError:
     pass
   # Find files
